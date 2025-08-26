@@ -1,9 +1,10 @@
 pipeline {
   agent {
+    // Changed to a Docker image that includes Java (OpenJDK 11)
     docker { image 'maven:3.8.6-openjdk-11' }
   }
   stages {
-    stage('Prepare') {
+    stage('Prepare Java Code') {
       steps {
         sh 'mkdir -p src/main/java'
         sh """
@@ -17,9 +18,11 @@ EOF
         """
       }
     }
-    stage('Compile and Run') {
+    stage('Compile and Run Java') {
       steps {
+        // Compile the Java source file
         sh 'javac src/main/java/HelloWorld.java'
+        // Run the compiled Java class
         sh 'java -cp src/main/java HelloWorld'
       }
     }
