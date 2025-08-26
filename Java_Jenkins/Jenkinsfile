@@ -2,7 +2,7 @@ pipeline {
   agent none
 
   stages {
-    stage('Test Node') {
+    stage('Node Test') {
       agent {
         docker { image 'node:16-alpine' }
       }
@@ -12,7 +12,9 @@ pipeline {
     }
 
     stage('Java Hello World') {
-      agent any   // runs on Jenkins host, where Java is installed
+      agent {
+        docker { image 'openjdk:11' }
+      }
       steps {
         sh '''
           cat > HelloWorld.java <<'EOF'
