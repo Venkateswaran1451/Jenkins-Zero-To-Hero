@@ -13,7 +13,7 @@ pipeline {
               System.out.println("Hello, World!");
             }
           }
-          EOF
+EOF
         """
       }
     }
