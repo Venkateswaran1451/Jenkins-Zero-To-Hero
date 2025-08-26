@@ -1,33 +1,31 @@
 pipeline {
   agent none
+
   stages {
-    stage('Build Java') {
-      agent {
-        docker { image 'openjdk:17-jdk-slim' }
-      }
-      steps {
-        // Create the Java file
-        sh """
-          cat > HelloWorld.java <<EOF
-          public class HelloWorld {
-              public static void main(String[] args) {
-                  System.out.println("Hello, World!");
-              }
-          }
-          EOF
-        """
-        // Compile the Java file
-        sh 'javac HelloWorld.java'
-        // Run the compiled class
-        sh 'java HelloWorld'
-      }
-    }
-    stage('Run Node.js Test') {
+    stage('Test Node') {
       agent {
         docker { image 'node:16-alpine' }
       }
       steps {
         sh 'node --version'
+      }
+    }
+
+    stage('Java Hello World') {
+      agent any   // runs on Jenkins host, where Java is installed
+      steps {
+        sh '''
+          cat > HelloWorld.java <<'EOF'
+          public class HelloWorld {
+              public static void main(String[] args) {
+                  System.out.println("Hello, World from Java!");
+              }
+          }
+          EOF
+
+          javac HelloWorld.java
+          java HelloWorld
+        '''
       }
     }
   }
