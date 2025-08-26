@@ -7,7 +7,7 @@ pipeline {
     stage('Prepare Java Code') {
       steps {
         sh 'mkdir -p src/main/java'
-        sh """
+        sh """"
 }
           cat <<EOF > src/main/java/HelloWorld.java
           public class HelloWorld {
