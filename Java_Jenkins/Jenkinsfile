@@ -8,6 +8,7 @@ pipeline {
       steps {
         sh 'mkdir -p src/main/java'
         sh """
+}
           cat <<EOF > src/main/java/HelloWorld.java
           public class HelloWorld {
             public static void main(String[] args) {
