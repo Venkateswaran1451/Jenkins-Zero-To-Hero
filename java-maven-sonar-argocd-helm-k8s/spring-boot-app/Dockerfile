@@ -1,15 +1,17 @@
+# Base image: Maven with Java 21 (Temurin)
+FROM maven:3.9.6-eclipse-temurin-21
 
-# Use official OpenJDK 21 base image
-FROM eclipse-temurin:21-jdk
+# Install Docker CLI
+USER root
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set working directory in container
-WORKDIR /app
+# Default workdir
+WORKDIR /workspace
 
-# Copy your application JAR (replace with your JAR name)
-COPY target/spring-boot-web.jar app.jar
+# Print versions for debugging
+RUN java -version && mvn -v && docker --version
 
-# Expose port (optional, if your app uses a port)
-
-
-# Command to run the JAR
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Switch back to Jenkins-friendly user
+CMD ["bash"]
