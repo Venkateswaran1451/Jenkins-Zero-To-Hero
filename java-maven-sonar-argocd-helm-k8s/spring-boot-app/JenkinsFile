@@ -48,31 +48,45 @@ pipeline {
         }
 
         stage('Update Deployment File') {
-            agent none  // Run on Jenkins host, not in Docker
-            steps {
-                node('master') {  // ensure it runs on host with Git and network access
-                    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                        timeout(time: 2, unit: 'MINUTES') {  // prevent indefinite hang
-                            sh '''
-                                echo "Current directory: $(pwd)"
-                                git status
+    agent { label 'master' } // run on Jenkins master node with Git installed
+    environment {
+        GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
+        GIT_USER_NAME = "Venkateswaran1451"
+    }
+    steps {
+        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+            timeout(time: 2, unit: 'MINUTES') { // avoid indefinite hang
+                sh '''
+                    # Debug info
+                    echo "Current directory: $(pwd)"
+                    git --version
+                    git status || echo "Not in a git repo yet"
 
-                                git config --global user.email "venkatesmem@gmail.com"
-                                git config --global user.name "Venkateswaran1451"
+                    # Configure Git
+                    git config --global user.email "venkatesmem@gmail.com"
+                    git config --global user.name "Venkateswaran1451"
 
-                                BUILD_NUMBER=${BUILD_NUMBER}
-                                DEPLOY_FILE="java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+                    # Ensure we're on the right branch and up-to-date
+                    git checkout main || git checkout -b main
+                    git fetch origin
+                    git reset --hard origin/main
 
-                                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" $DEPLOY_FILE
-                                git add $DEPLOY_FILE
-                                git diff --cached
-                                git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "No changes to commit"
+                    # Update deployment image
+                    BUILD_NUMBER=${BUILD_NUMBER}
+                    DEPLOY_FILE="java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" $DEPLOY_FILE
 
-                                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main --quiet
-                            '''
-                        }
-                    }
-                }
+                    # Commit only if changes exist
+                    git add $DEPLOY_FILE
+                    if ! git diff --cached --quiet; then
+                        git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                        # Push using token
+                        git remote set-url origin https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git
+                        GIT_CURL_VERBOSE=1 GIT_TRACE=1 git push origin HEAD:main
+                    else
+                        echo "No changes to commit"
+                    fi
+                '''
             }
         }
     }
