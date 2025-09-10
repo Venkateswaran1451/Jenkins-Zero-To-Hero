@@ -31,7 +31,7 @@ Install Java
 
 ```
 sudo apt update
-sudo apt install openjdk-17-jre
+sudo apt install openjdk-21-jre
 ```
 
 Verify Java is Installed
@@ -115,15 +115,21 @@ sudo apt install docker.io
 ```
  
 ### Grant Jenkins user and Ubuntu user permission to docker deamon.
+### Execute one by one and understand why it's being used.
 
 ```
 sudo su - 
 usermod -aG docker jenkins
+
 usermod -aG docker ubuntu
+
 systemctl restart docker
+
 ```
 
 Once you are done with the above steps, it is better to restart Jenkins.
+
+For ex. If your Jenkins url is 164.24.522.24:8080 then add /restart at the end of the url like http://164.24.522.24:8080/restart
 
 ```
 http://<ec2-instance-public-ip>:8080/restart
