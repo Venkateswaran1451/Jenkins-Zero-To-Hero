@@ -64,7 +64,7 @@ pipeline {
                             git config --global --add safe.directory $(pwd)
 
                             # Configure Git user
-                            git config --global user.email "venkatesmem@gmail.com"
+                            git config --global user.email "Venkateswaran1451@users.noreply.github.com"
                             git config --global user.name "Venkateswaran1451"
 
                             # Ensure branch is main
