@@ -10,7 +10,7 @@ This is a MVC architecture based application where controller returns a page wit
 Checkout the repo and move to the directory
 
 ```
-git clone https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero/java-maven-sonar-argocd-helm-k8s/sprint-boot-app
+git clone https://github.com/Venkateswaran1451/Jenkins-Zero-To-Hero/java-maven-sonar-argocd-helm-k8s/sprint-boot-app
 cd java-maven-sonar-argocd-helm-k8s/sprint-boot-app
 ```
 
@@ -37,11 +37,11 @@ java -jar target/spring-boot-web.jar
 Build the Docker Image
 
 ```
-docker build -t ultimate-cicd-pipeline:v1 .
+docker build -t eclipse-venkat-docker-agent:v3 .
 ```
 
 ```
-docker run -d -p 8010:8080 -t ultimate-cicd-pipeline:v1
+docker run -d -p 8010:8080 -t eclipse-venkat-docker-agent:v3
 ```
 
 Hurray !! Access the application on `http://<ip-address>:8010`
